@@ -5,10 +5,10 @@
   <style>
     body {
       margin: 0;
-      min-height: 100vh;
       font-family: Arial;
       background: linear-gradient(120deg,#4f46e5,#9333ea,#06b6d4);
       color: white;
+      min-height: 100vh;
     }
 
     .nav {
@@ -17,29 +17,30 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      backdrop-filter: blur(10px);
+    }
+
+    .nav button {
+      background: #22c55e;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
     }
 
     .card {
+      max-width: 1000px;
       margin: 40px auto;
       background: rgba(0,0,0,0.6);
       padding: 30px;
       border-radius: 20px;
-      width: 90%;
-      max-width: 1000px;
-      backdrop-filter: blur(10px);
-    }
-
-    h2 {
-      text-align: center;
-      margin-top: 0;
     }
 
     .games {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
       gap: 25px;
-      margin-top: 30px;
+      margin-top: 25px;
     }
 
     .game {
@@ -47,41 +48,24 @@
       border-radius: 18px;
       overflow: hidden;
       cursor: pointer;
-      transition: transform 0.2s, background 0.2s;
+      transition: transform .2s;
     }
 
-    .game:hover {
-      transform: scale(1.05);
-      background: rgba(255,255,255,0.2);
-    }
+    .game:hover { transform: scale(1.05); }
 
     .game-img {
       height: 120px;
-      background: linear-gradient(135deg,#22c55e,#38bdf8,#a855f7);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 48px;
+      background: linear-gradient(135deg,#22c55e,#38bdf8,#a855f7);
     }
 
     .game-name {
       padding: 15px;
       text-align: center;
-      font-size: 16px;
       font-weight: bold;
-    }
-
-    .logout {
-      margin-top: 25px;
-      padding: 10px 16px;
-      border-radius: 10px;
-      border: none;
-      background: #ef4444;
-      color: white;
-      cursor: pointer;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
     }
   </style>
 </head>
@@ -90,57 +74,38 @@
 <div class="nav">
   <div>🎮 Gamiq</div>
   <div>
-    👤 <span id="user"></span>
+    <button onclick="location.href='create.html'">➕ Create</button>
   </div>
 </div>
 
 <div class="card">
-  <h2>Games</h2>
+  <h2>Live Games</h2>
   <div class="games" id="games"></div>
-
-  <button class="logout" onclick="logout()">Log out</button>
 </div>
 
 <script>
-const currentUser = localStorage.getItem("currentUser");
-if (!currentUser) location.href = "index.html";
+const user = localStorage.getItem("currentUser");
+if (!user) location.href = "index.html";
 
-document.getElementById("user").textContent = currentUser;
-
-const gamesDiv = document.getElementById("games");
 const games = JSON.parse(localStorage.getItem("games") || "{}");
+const gamesDiv = document.getElementById("games");
 
-let hasGames = false;
-
+let any = false;
 for (const id in games) {
   if (games[id].status === "approved") {
-    hasGames = true;
-
-    const div = document.createElement("div");
-    div.className = "game";
-    div.onclick = () => openGame(id);
-
-    div.innerHTML = `
+    any = true;
+    const g = document.createElement("div");
+    g.className = "game";
+    g.innerHTML = `
       <div class="game-img">🎮</div>
       <div class="game-name">${games[id].name}</div>
     `;
-
-    gamesDiv.appendChild(div);
+    gamesDiv.appendChild(g);
   }
 }
 
-if (!hasGames) {
-  gamesDiv.innerHTML = "<p style='text-align:center;'>No games yet</p>";
-}
-
-function openGame(gameId) {
-  console.log("Open approved game:", gameId);
-  // later → window.location.href = "play.html?id=" + gameId;
-}
-
-function logout() {
-  localStorage.removeItem("currentUser");
-  location.href = "index.html";
+if (!any) {
+  gamesDiv.innerHTML = "<p>No games live yet</p>";
 }
 </script>
 
