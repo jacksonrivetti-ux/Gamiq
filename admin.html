@@ -4,23 +4,14 @@
   <title>Gamiq Admin</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial;
       background: linear-gradient(120deg,#7c3aed,#ec4899,#22d3ee);
       color: white;
     }
 
-    .nav {
-      padding: 15px 25px;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
     .box {
       max-width: 800px;
-      margin: 40px auto;
+      margin: 30px auto;
       background: rgba(0,0,0,0.6);
       padding: 25px;
       border-radius: 20px;
@@ -34,87 +25,82 @@
     }
 
     button {
-      padding: 8px 14px;
-      border: none;
-      border-radius: 10px;
+      margin-top: 10px;
       margin-right: 10px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: none;
       cursor: pointer;
     }
 
-    .approve {
-      background: #22c55e;
-      color: white;
-    }
-
-    .reject {
-      background: #ef4444;
-      color: white;
-    }
+    .approve { background: #22c55e; color: white; }
+    .reject { background: #ef4444; color: white; }
+    .remove { background: #f97316; color: white; }
   </style>
 </head>
 <body>
 
-<div class="nav">
-  <div>🛠️ Gamiq Admin</div>
-  <button onclick="logout()">Log out</button>
+<div class="box">
+  <h2>Pending Games</h2>
+  <div id="pending"></div>
 </div>
 
 <div class="box">
-  <h2>Pending Games</h2>
-  <div id="list"></div>
+  <h2>Live Games</h2>
+  <div id="live"></div>
 </div>
 
 <script>
-const currentUser = localStorage.getItem("currentUser");
-if (currentUser !== "admin") location.href = "index.html";
+if (localStorage.getItem("currentUser") !== "admin")
+  location.href = "index.html";
 
 const games = JSON.parse(localStorage.getItem("games") || "{}");
-const list = document.getElementById("list");
+const pending = document.getElementById("pending");
+const live = document.getElementById("live");
 
-function render() {
-  list.innerHTML = "";
+for (const id in games) {
+  const g = games[id];
+  const div = document.createElement("div");
+  div.className = "game";
+  div.innerHTML = `<b>${g.name}</b><br>${g.creator}`;
 
-  let hasAny = false;
-
-  for (const id in games) {
-    if (games[id].status === "pending") {
-      hasAny = true;
-
-      const div = document.createElement("div");
-      div.className = "game";
-      div.innerHTML = `
-        <strong>${games[id].name}</strong><br>
-        Creator: ${games[id].creator}<br><br>
-        <button class="approve" onclick="approve('${id}')">Approve</button>
-        <button class="reject" onclick="reject('${id}')">Reject</button>
-      `;
-      list.appendChild(div);
-    }
+  if (g.status === "pending") {
+    div.innerHTML += `
+      <br>
+      <button class="approve" onclick="approve('${id}')">Approve</button>
+      <button class="reject" onclick="remove('${id}')">Reject</button>
+    `;
+    pending.appendChild(div);
   }
 
-  if (!hasAny) {
-    list.innerHTML = "<p>No pending games 🎉</p>";
+  if (g.status === "approved") {
+    div.innerHTML += `
+      <br>
+      <button class="remove" onclick="unpublish('${id}')">Take Down</button>
+    `;
+    live.appendChild(div);
   }
 }
 
 function approve(id) {
   games[id].status = "approved";
-  localStorage.setItem("games", JSON.stringify(games));
-  render();
+  save();
 }
 
-function reject(id) {
+function unpublish(id) {
+  games[id].status = "pending";
+  save();
+}
+
+function remove(id) {
   delete games[id];
+  save();
+}
+
+function save() {
   localStorage.setItem("games", JSON.stringify(games));
-  render();
+  location.reload();
 }
-
-function logout() {
-  localStorage.removeItem("currentUser");
-  location.href = "index.html";
-}
-
-render();
 </script>
 
 </body>
