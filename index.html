@@ -1,123 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Gamiq — Sign In</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <title>Gamiq – Login</title>
+
+  <link rel="icon" href="logo.png">
   <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#4f46e5">
-  <link rel="icon" href="logo.png" type="image/png">
-<link rel="apple-touch-icon" href="logo.png">
-
-
+  <meta name="theme-color" content="#4f46e5">
 
   <style>
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+
     body {
       margin: 0;
       height: 100vh;
-      background: linear-gradient(120deg, #4f46e5, #9333ea, #06b6d4);
-      background-size: 300% 300%;
-      animation: bg 10s ease infinite;
+      background: linear-gradient(120deg, #6366f1, #22c55e, #ec4899);
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: Arial, sans-serif;
       color: white;
     }
 
-    @keyframes bg {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    .box {
-      background: rgba(0,0,0,0.45);
+    .card {
+      background: rgba(0,0,0,0.5);
       padding: 30px;
       border-radius: 15px;
       width: 300px;
       text-align: center;
-      backdrop-filter: blur(10px);
+      z-index: 2;
     }
 
     .logo {
-      width: 150px;
-      height: 150px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 10px;
-      box-shadow: 0 0 30px rgba(255,255,255,0.4);
+      margin-bottom: 15px;
     }
 
-    input, button {
+    input {
       width: 100%;
       padding: 10px;
-      margin-top: 10px;
+      margin: 8px 0;
       border-radius: 8px;
       border: none;
     }
 
     button {
-      background: #4f46e5;
-      color: white;
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+      background: #22c55e;
       font-weight: bold;
       cursor: pointer;
     }
 
-    .link {
-      margin-top: 15px;
-      font-size: 14px;
+    canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
     }
-
-    .link a {
-      color: #a5b4fc;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    <audio id="bgMusic" loop>
-  <source src="music.aac" type="audio/mpeg">
-</audio>
-
   </style>
 </head>
 <body>
 
-  <div class="box">
-    <img src="logo.png" class="logo" />
-    <h2>Gamiq</h2>
-    <p>Create. Play. Share.</p>
+<canvas id="particles"></canvas>
 
-    <input id="username" placeholder="Username">
-    <input id="password" type="password" placeholder="Password">
-    <button onclick="login()">Sign In</button>
+<div class="card">
+  <img src="logo.png" class="logo">
+  <h2>Gamiq</h2>
 
-    <div class="link">
-      Don’t have an account?
-      <a href="signup.html">Create one</a>
-    </div>
-  </div>
+  <input type="text" placeholder="Username">
+  <input type="password" placeholder="Password">
 
-  <script>
-    if (localStorage.getItem("gamiqUser")) {
-      window.location.href = "home.html";
+  <button onclick="location.href='home.html'">Sign In</button>
+</div>
+
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  // 🎵 MUSIC
+  const music = document.getElementById("bgMusic");
+  let started = false;
+
+  function startMusic() {
+    if (!started) {
+      music.volume = 0.4;
+      music.play().catch(()=>{});
+      started = true;
     }
+  }
 
-    function login() {
-      const u = username.value;
-      const p = password.value;
-      const acc = JSON.parse(localStorage.getItem("gamiqAccount"));
+  document.addEventListener("click", startMusic);
+  document.addEventListener("keydown", startMusic);
 
-      if (acc && u === acc.username && p === acc.password) {
-        localStorage.setItem("gamiqUser", u);
-        window.location.href = "home.html";
-      } else {
-        alert("Invalid login");
-      }
-    }
-  </script>
+  // ✨ PARTICLES
+  const canvas = document.getElementById("particles");
+  const ctx = canvas.getContext("2d");
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+
+  const particles = Array.from({length: 80}, () => ({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    r: Math.random()*3+1,
+    dx: Math.random()*0.6-0.3,
+    dy: Math.random()*0.6-0.3
+  }));
+
+  function animate() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p => {
+      p.x += p.dx; p.y += p.dy;
+      if(p.x<0||p.x>canvas.width) p.dx*=-1;
+      if(p.y<0||p.y>canvas.height) p.dy*=-1;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle="rgba(255,255,255,0.7)";
+      ctx.fill();
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+</script>
 
 </body>
 </html>
-
-
-
