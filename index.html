@@ -1,51 +1,242 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Gamiq</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Gamiq — Create. Play. Share.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(120deg, #4f46e5, #9333ea, #06b6d4);
+      background-size: 300% 300%;
+      animation: gradientMove 10s ease infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: white;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* PARTICLES */
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 50%;
+      animation: float 20s linear infinite;
+    }
+
+    @keyframes float {
+      from {
+        transform: translateY(100vh);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(-10vh);
+        opacity: 0;
+      }
+    }
+
+    /* LOGIN BOX */
+    .box {
+      background: rgba(0,0,0,0.4);
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      width: 300px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 40px rgba(0,0,0,0.4);
+      z-index: 2;
+    }
+
+    .logo {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      object-fit: cover;
+      padding: 8px;
+      background: rgba(255,255,255,0.15);
+      box-shadow:
+        0 0 25px rgba(255,255,255,0.5),
+        0 0 60px rgba(0,0,0,0.4);
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      margin-bottom: 5px;
+    }
+
+    p {
+      font-size: 14px;
+      opacity: 0.85;
+      margin-bottom: 15px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #4f46e5;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #4338ca;
+    }
+
+    .create-account {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .create-account span {
+      color: #a5b4fc;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .create-account span:hover {
+      text-decoration: underline;
+    }
+
+    /* MAIN CONTENT */
+    #mainContent {
+      display: none;
+      text-align: center;
+      z-index: 2;
+    }
+
+    #logout {
+      margin-top: 20px;
+      background: #ef4444;
+    }
+  </style>
 </head>
 <body>
 
   <!-- PARTICLES -->
-  <div class="particles">
-    <span></span><span></span><span></span><span></span><span></span>
-    <span></span><span></span><span></span><span></span><span></span>
-    <span></span><span></span><span></span><span></span><span></span>
-  </div>
+  <script>
+    for (let i = 0; i < 40; i++) {
+      const p = document.createElement("div");
+      p.className = "particle";
+      p.style.left = Math.random() * 100 + "vw";
+      p.style.animationDuration = 10 + Math.random() * 20 + "s";
+      p.style.opacity = Math.random();
+      document.body.appendChild(p);
+    }
+  </script>
 
   <!-- LOGIN -->
-  <div id="login-box">
-    <img src="logo.png" class="logo">
+  <div class="box" id="loginBox">
+    <img src="logo.png" class="logo" alt="Gamiq Logo" />
     <h1>Gamiq</h1>
     <p>Create. Play. Share.</p>
 
-    <input id="username" placeholder="Username">
-    <input id="password" type="password" placeholder="Password">
-    <button onclick="login()">Sign In</button>
+    <input id="username" placeholder="Username" />
+    <input id="password" type="password" placeholder="Password" />
+    <button id="loginBtn">Sign In</button>
 
-    <p id="error"></p>
+    <p class="create-account">
+      Don’t have an account?
+      <span id="signupBtn">Create an account</span>
+    </p>
   </div>
 
-  <!-- MAIN SITE -->
-  <div id="site">
-    <header>
-      <img src="logo.png" class="logo small">
-      <h1>Gamiq</h1>
-      <p>Create. Play. Share.</p>
-      <button onclick="logout()">Log Out</button>
-    </header>
-
-    <section>
-      <h2>Featured Games</h2>
-      <div class="games">
-        <div class="game">Game 1</div>
-        <div class="game">Game 2</div>
-        <div class="game">Game 3</div>
-      </div>
-    </section>
+  <!-- MAIN CONTENT -->
+  <div id="mainContent">
+    <img src="logo.png" class="logo" />
+    <h1>Welcome to Gamiq 🎮</h1>
+    <p>You are signed in.</p>
+    <button id="logout">Log Out</button>
   </div>
 
-  <script src="script.js"></script>
+  <!-- SCRIPT -->
+  <script>
+    const loginBox = document.getElementById("loginBox");
+    const mainContent = document.getElementById("mainContent");
+
+    const loginBtn = document.getElementById("loginBtn");
+    const signupBtn = document.getElementById("signupBtn");
+    const logoutBtn = document.getElementById("logout");
+
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+
+    // Auto login
+    if (localStorage.getItem("gamiqUser")) {
+      loginBox.style.display = "none";
+      mainContent.style.display = "block";
+    }
+
+    loginBtn.onclick = () => {
+      const account = JSON.parse(localStorage.getItem("gamiqAccount"));
+      if (
+        account &&
+        usernameInput.value === account.username &&
+        passwordInput.value === account.password
+      ) {
+        localStorage.setItem("gamiqUser", account.username);
+        loginBox.style.display = "none";
+        mainContent.style.display = "block";
+      } else {
+        alert("Invalid login");
+      }
+    };
+
+    signupBtn.onclick = () => {
+      const user = prompt("Create a username:");
+      const pass = prompt("Create a password:");
+
+      if (!user || !pass) {
+        alert("Fill everything");
+        return;
+      }
+
+      localStorage.setItem(
+        "gamiqAccount",
+        JSON.stringify({ username: user, password: pass })
+      );
+      localStorage.setItem("gamiqUser", user);
+
+      alert("Account created!");
+      loginBox.style.display = "none";
+      mainContent.style.display = "block";
+    };
+
+    logoutBtn.onclick = () => {
+      localStorage.removeItem("gamiqUser");
+      location.reload();
+    };
+  </script>
+
 </body>
 </html>
+
