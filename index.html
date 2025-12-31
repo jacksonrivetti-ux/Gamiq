@@ -5,104 +5,147 @@
   <style>
     body {
       margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       font-family: Arial;
       background: linear-gradient(120deg,#4f46e5,#9333ea,#06b6d4);
       color: white;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .box {
       background: rgba(0,0,0,0.6);
       padding: 30px;
       border-radius: 20px;
-      width: 300px;
+      width: 320px;
       text-align: center;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 30px rgba(0,0,0,0.5);
     }
 
     .logo {
-      width: 90px;
-      height: 90px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 15px;
-      box-shadow: 0 0 15px rgba(255,255,255,0.4);
+      background: white;
+      margin: 0 auto 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      color: black;
     }
 
-    h2 {
-      margin-top: 0;
-    }
-
-    input, button {
+    input {
       width: 100%;
       padding: 10px;
-      margin: 10px 0;
+      margin-top: 10px;
       border-radius: 10px;
       border: none;
+      font-size: 16px;
     }
 
     button {
+      margin-top: 15px;
+      width: 100%;
       background: #22c55e;
+      border: none;
+      padding: 12px;
+      font-size: 16px;
       color: white;
+      border-radius: 12px;
       cursor: pointer;
     }
 
-    a {
-      color: #38bdf8;
-      text-decoration: none;
-      font-size: 14px;
+    .link {
+      margin-top: 12px;
+      cursor: pointer;
+      color: #93c5fd;
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
 
 <div class="box">
-  <!-- LOGO -->
-  <img src="logo.png" alt="Gamiq Logo" class="logo">
+  <div class="logo">🎮</div>
 
-  <h2>Sign In</h2>
+  <!-- LOGIN -->
+  <div id="login">
+    <h2>Sign In</h2>
+    <input id="luser" placeholder="Username">
+    <input id="lpass" type="password" placeholder="Password">
+    <button onclick="login()">Sign In</button>
+    <div class="link" onclick="showSignup()">Create an account</div>
+  </div>
 
-  <input id="user" placeholder="Username">
-  <input id="pass" type="password" placeholder="Password">
-
-  <button onclick="login()">Login</button>
-
-  <p><a href="signup.html">Create an account</a></p>
+  <!-- SIGN UP -->
+  <div id="signup" class="hidden">
+    <h2>Create Account</h2>
+    <input id="suser" placeholder="Username">
+    <input id="spass" type="password" placeholder="Password">
+    <input id="sage" type="number" placeholder="Age">
+    <button onclick="signup()">Create Account</button>
+    <div class="link" onclick="showLogin()">Back to sign in</div>
+  </div>
 </div>
 
 <script>
-const ADMIN_USER = "admin";
-const ADMIN_PASS = "admin1234";
+const users = JSON.parse(localStorage.getItem("users") || "{}");
+
+function showSignup() {
+  login.style.display = "none";
+  signup.style.display = "block";
+}
+
+function showLogin() {
+  signup.style.display = "none";
+  login.style.display = "block";
+}
+
+function signup() {
+  const u = suser.value.trim();
+  const p = spass.value;
+  const a = sage.value;
+
+  if (!u || !p || !a) {
+    alert("Fill everything out");
+    return;
+  }
+
+  if (users[u]) {
+    alert("Username already exists");
+    return;
+  }
+
+  users[u] = {
+    password: p,
+    age: a
+  };
+
+  localStorage.setItem("users", JSON.stringify(users));
+  alert("Account created!");
+  showLogin();
+}
 
 function login() {
-  const username = document.getElementById("user").value;
-  const password = document.getElementById("pass").value;
+  const u = luser.value.trim();
+  const p = lpass.value;
 
-  // ADMIN LOGIN
-  if (username === ADMIN_USER && password === ADMIN_PASS) {
+  if (u === "admin" && p === "admin1234") {
     localStorage.setItem("currentUser", "admin");
     location.href = "admin.html";
     return;
   }
 
-  // NORMAL USERS
-  const users = JSON.parse(localStorage.getItem("users") || "{}");
-
-  if (!users[username]) {
-    alert("User not found");
+  if (!users[u] || users[u].password !== p) {
+    alert("Wrong login");
     return;
   }
 
-  if (users[username].password !== password) {
-    alert("Wrong password");
-    return;
-  }
-
-  localStorage.setItem("currentUser", username);
+  localStorage.setItem("currentUser", u);
   location.href = "home.html";
 }
 </script>
