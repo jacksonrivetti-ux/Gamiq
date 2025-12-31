@@ -23,8 +23,8 @@
       display: flex;
       align-items: center;
       gap: 15px;
-      z-index: 2;
       position: relative;
+      z-index: 2;
     }
 
     nav img {
@@ -35,8 +35,8 @@
 
     .content {
       padding: 30px;
-      z-index: 2;
       position: relative;
+      z-index: 2;
     }
 
     canvas {
@@ -60,59 +60,40 @@
   <p>Your games will appear here.</p>
 </div>
 
-<audio id="bgMusic" loop>
-  <source src="music.aac" type="audio/aac">
-  <source src="music.mp3" type="audio/mpeg">
-</audio>
-
-
 <script>
-  // 🎵 MUSIC
-  const music = document.getElementById("bgMusic");
-  let started = false;
-
-  function startMusic() {
-    if (!started) {
-      music.volume = 0.4;
-      music.play().catch(()=>{});
-      started = true;
-    }
-  }
-
-  document.addEventListener("click", startMusic);
-  document.addEventListener("keydown", startMusic);
-
-  // ✨ PARTICLES
   const canvas = document.getElementById("particles");
   const ctx = canvas.getContext("2d");
+
   canvas.width = innerWidth;
   canvas.height = innerHeight;
 
-  const particles = Array.from({length: 100}, () => ({
-    x: Math.random()*canvas.width,
-    y: Math.random()*canvas.height,
-    r: Math.random()*3+1,
-    dx: Math.random()*0.6-0.3,
-    dy: Math.random()*0.6-0.3
+  const particles = Array.from({ length: 100 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 3 + 1,
+    dx: Math.random() * 0.6 - 0.3,
+    dy: Math.random() * 0.6 - 0.3
   }));
 
   function animate() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     particles.forEach(p => {
-      p.x += p.dx; p.y += p.dy;
-      if(p.x<0||p.x>canvas.width) p.dx*=-1;
-      if(p.y<0||p.y>canvas.height) p.dy*=-1;
+      p.x += p.dx;
+      p.y += p.dy;
+
+      if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+
       ctx.beginPath();
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle="rgba(255,255,255,0.7)";
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255,255,255,0.7)";
       ctx.fill();
     });
     requestAnimationFrame(animate);
   }
+
   animate();
 </script>
 
 </body>
 </html>
-
-
