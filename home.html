@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gamiq — Home</title>
+</head>
+<body style="background:#111;color:white;text-align:center;font-family:Arial">
+
+  <h1>Welcome to Gamiq 🎮</h1>
+  <p>You are signed in.</p>
+
+  <button onclick="logout()">Log out</button>
+
+  <script>
+    if (!localStorage.getItem("gamiqUser")) {
+      window.location.href = "index.html";
+    }
+
+    function logout() {
+      localStorage.removeItem("gamiqUser");
+      window.location.href = "index.html";
+    }
+  </script>
+
+</body>
+</html>

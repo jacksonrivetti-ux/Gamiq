@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create Account — Gamiq</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(120deg, #06b6d4, #9333ea, #4f46e5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+
+    .box {
+      background: rgba(0,0,0,0.45);
+      padding: 30px;
+      border-radius: 15px;
+      width: 300px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+    }
+
+    button {
+      background: #22c55e;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <h2>Create Account</h2>
+
+    <input id="newUser" placeholder="Username">
+    <input id="newPass" type="password" placeholder="Password">
+    <button onclick="signup()">Create Account</button>
+  </div>
+
+  <script>
+    function signup() {
+      const u = newUser.value;
+      const p = newPass.value;
+
+      if (!u || !p) {
+        alert("Fill everything");
+        return;
+      }
+
+      localStorage.setItem(
+        "gamiqAccount",
+        JSON.stringify({ username: u, password: p })
+      );
+      localStorage.setItem("gamiqUser", u);
+
+      window.location.href = "home.html";
+    }
+  </script>
+
+</body>
+</html>
