@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gamiq</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- PARTICLES -->
+  <div class="particles">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="login-box">
+    <img src="logo.png" class="logo">
+    <h1>Gamiq</h1>
+    <p>Create. Play. Share.</p>
+
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="login()">Sign In</button>
+
+    <p id="error"></p>
+  </div>
+
+  <!-- MAIN SITE -->
+  <div id="site">
+    <header>
+      <img src="logo.png" class="logo small">
+      <h1>Gamiq</h1>
+      <p>Create. Play. Share.</p>
+      <button onclick="logout()">Log Out</button>
+    </header>
+
+    <section>
+      <h2>Featured Games</h2>
+      <div class="games">
+        <div class="game">Game 1</div>
+        <div class="game">Game 2</div>
+        <div class="game">Game 3</div>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
