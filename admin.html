@@ -1,110 +1,120 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Gamiq Login</title>
+  <title>Gamiq Admin</title>
   <style>
     body {
       margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       font-family: Arial;
-      background: linear-gradient(120deg,#4f46e5,#9333ea,#06b6d4);
+      background: linear-gradient(120deg,#7c3aed,#ec4899,#22d3ee);
       color: white;
+    }
+
+    .nav {
+      padding: 15px 25px;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .box {
+      max-width: 800px;
+      margin: 40px auto;
       background: rgba(0,0,0,0.6);
-      padding: 30px;
+      padding: 25px;
       border-radius: 20px;
-      width: 300px;
-      text-align: center;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 30px rgba(0,0,0,0.5);
     }
 
-    .logo {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      object-fit: cover;
+    .game {
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 15px;
       margin-bottom: 15px;
-      box-shadow: 0 0 15px rgba(255,255,255,0.4);
-    }
-
-    h2 {
-      margin-top: 0;
-    }
-
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 10px;
-      border: none;
     }
 
     button {
-      background: #22c55e;
-      color: white;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 10px;
+      margin-right: 10px;
       cursor: pointer;
     }
 
-    a {
-      color: #38bdf8;
-      text-decoration: none;
-      font-size: 14px;
+    .approve {
+      background: #22c55e;
+      color: white;
+    }
+
+    .reject {
+      background: #ef4444;
+      color: white;
     }
   </style>
 </head>
 <body>
 
+<div class="nav">
+  <div>🛠️ Gamiq Admin</div>
+  <button onclick="logout()">Log out</button>
+</div>
+
 <div class="box">
-  <!-- LOGO -->
-  <img src="logo.png" alt="Gamiq Logo" class="logo">
-
-  <h2>Sign In</h2>
-
-  <input id="user" placeholder="Username">
-  <input id="pass" type="password" placeholder="Password">
-
-  <button onclick="login()">Login</button>
-
-  <p><a href="signup.html">Create an account</a></p>
+  <h2>Pending Games</h2>
+  <div id="list"></div>
 </div>
 
 <script>
-const ADMIN_USER = "admin";
-const ADMIN_PASS = "admin1234";
+const currentUser = localStorage.getItem("currentUser");
+if (currentUser !== "admin") location.href = "index.html";
 
-function login() {
-  const username = document.getElementById("user").value;
-  const password = document.getElementById("pass").value;
+const games = JSON.parse(localStorage.getItem("games") || "{}");
+const list = document.getElementById("list");
 
-  // ADMIN LOGIN
-  if (username === ADMIN_USER && password === ADMIN_PASS) {
-    localStorage.setItem("currentUser", "admin");
-    location.href = "admin.html";
-    return;
+function render() {
+  list.innerHTML = "";
+
+  let hasAny = false;
+
+  for (const id in games) {
+    if (games[id].status === "pending") {
+      hasAny = true;
+
+      const div = document.createElement("div");
+      div.className = "game";
+      div.innerHTML = `
+        <strong>${games[id].name}</strong><br>
+        Creator: ${games[id].creator}<br><br>
+        <button class="approve" onclick="approve('${id}')">Approve</button>
+        <button class="reject" onclick="reject('${id}')">Reject</button>
+      `;
+      list.appendChild(div);
+    }
   }
 
-  // NORMAL USERS
-  const users = JSON.parse(localStorage.getItem("users") || "{}");
-
-  if (!users[username]) {
-    alert("User not found");
-    return;
+  if (!hasAny) {
+    list.innerHTML = "<p>No pending games 🎉</p>";
   }
-
-  if (users[username].password !== password) {
-    alert("Wrong password");
-    return;
-  }
-
-  localStorage.setItem("currentUser", username);
-  location.href = "home.html";
 }
+
+function approve(id) {
+  games[id].status = "approved";
+  localStorage.setItem("games", JSON.stringify(games));
+  render();
+}
+
+function reject(id) {
+  delete games[id];
+  localStorage.setItem("games", JSON.stringify(games));
+  render();
+}
+
+function logout() {
+  localStorage.removeItem("currentUser");
+  location.href = "index.html";
+}
+
+render();
 </script>
 
 </body>
