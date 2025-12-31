@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create Game</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: linear-gradient(120deg,#4f46e5,#9333ea,#06b6d4);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .box {
+      background: rgba(0,0,0,0.6);
+      padding: 30px;
+      border-radius: 20px;
+      width: 300px;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: none;
+    }
+
+    button {
+      background: #22c55e;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Create Game</h2>
+  <input id="name" placeholder="Game name">
+  <textarea id="desc" placeholder="Description"></textarea>
+  <button onclick="submitGame()">Submit</button>
+</div>
+
+<script>
+function submitGame() {
+  const name = document.getElementById("name").value;
+  const desc = document.getElementById("desc").value;
+  const creator = localStorage.getItem("currentUser");
+
+  if (!name) return alert("Enter a name");
+
+  const games = JSON.parse(localStorage.getItem("games") || "{}");
+
+  games["game_" + Date.now()] = {
+    name,
+    desc,
+    creator,
+    status: "pending"
+  };
+
+  localStorage.setItem("games", JSON.stringify(games));
+  alert("Game sent for review!");
+  location.href = "home.html";
+}
+</script>
+
+</body>
+</html>
