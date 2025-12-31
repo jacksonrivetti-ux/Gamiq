@@ -11,7 +11,6 @@
       color: white;
     }
 
-    /* Top bar */
     .nav {
       padding: 15px 25px;
       background: rgba(0,0,0,0.5);
@@ -21,7 +20,6 @@
       backdrop-filter: blur(10px);
     }
 
-    /* Main card */
     .card {
       margin: 40px auto;
       background: rgba(0,0,0,0.6);
@@ -37,7 +35,6 @@
       margin-top: 0;
     }
 
-    /* Game grid */
     .games {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
@@ -58,7 +55,6 @@
       background: rgba(255,255,255,0.2);
     }
 
-    /* Fake image box */
     .game-img {
       height: 120px;
       background: linear-gradient(135deg,#22c55e,#38bdf8,#a855f7);
@@ -91,7 +87,6 @@
 </head>
 <body>
 
-<!-- NAV -->
 <div class="nav">
   <div>🎮 Gamiq</div>
   <div>
@@ -100,22 +95,21 @@
   </div>
 </div>
 
-<!-- CONTENT -->
 <div class="card">
   <h2>Games</h2>
 
   <div class="games">
-    <div class="game" onclick="play(10)">
+    <div class="game" onclick="openGame('game1')">
       <div class="game-img">🕹️</div>
       <div class="game-name">Game One</div>
     </div>
 
-    <div class="game" onclick="play(20)">
+    <div class="game" onclick="openGame('space')">
       <div class="game-img">🚀</div>
       <div class="game-name">Space Game</div>
     </div>
 
-    <div class="game" onclick="play(30)">
+    <div class="game" onclick="openGame('puzzle')">
       <div class="game-img">🧠</div>
       <div class="game-name">Puzzle Game</div>
     </div>
@@ -129,19 +123,15 @@ const currentUser = localStorage.getItem("currentUser");
 if (!currentUser) location.href = "index.html";
 
 const users = JSON.parse(localStorage.getItem("users"));
-let tokens = users[currentUser].tokens;
-
 document.getElementById("user").textContent = currentUser;
-document.getElementById("tokens").textContent = tokens;
+document.getElementById("tokens").textContent = users[currentUser].tokens;
 
-function play(amount) {
-  tokens += amount;
-  users[currentUser].tokens = tokens;
-  localStorage.setItem("users", JSON.stringify(users));
-  document.getElementById("tokens").textContent = tokens;
+function openGame(gameId) {
+  // No token changes here
+  console.log("Open game:", gameId);
 
-  // later you can redirect to a real game page
-  // window.location.href = "games/game1.html";
+  // later you can redirect to a real game page:
+  // window.location.href = "games/" + gameId + ".html";
 }
 
 function logout() {
