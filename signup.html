@@ -9,51 +9,30 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(120deg, #06b6d4, #9333ea, #4f46e5);
-      overflow: hidden;
+      font-family: Arial;
+      background: linear-gradient(120deg,#06b6d4,#9333ea,#4f46e5);
       color: white;
     }
-
     .box {
       background: rgba(0,0,0,0.6);
       padding: 30px;
       border-radius: 20px;
       width: 300px;
       text-align: center;
-      box-shadow: 0 0 30px rgba(0,0,0,0.5);
       backdrop-filter: blur(10px);
     }
-
-    h2 {
-      margin-bottom: 20px;
-    }
-
-    input {
+    input, button {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
       border-radius: 10px;
       border: none;
-      outline: none;
     }
-
     button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
       background: #22c55e;
       color: white;
-      font-size: 16px;
+      cursor: pointer;
     }
-
-    button:hover {
-      background: #16a34a;
-    }
-
     a {
       color: #38bdf8;
       text-decoration: none;
@@ -65,26 +44,41 @@
 
 <div class="box">
   <h2>Create Account</h2>
-
-  <input id="username" placeholder="Username">
-  <input id="password" type="password" placeholder="Password">
-
-  <button id="signupBtn">Create</button>
-
-  <p>
-    <a href="index.html">Back to login</a>
-  </p>
+  <input id="user" placeholder="Username">
+  <input id="pass" type="password" placeholder="Password">
+  <button onclick="signup()">Create</button>
+  <p><a href="index.html">Back to login</a></p>
 </div>
 
-<script type="module">
-  import { signup } from "./auth.js";
+<script>
+function signup() {
+  const user = userInput.value;
+  const pass = passInput.value;
 
-  document.getElementById("signupBtn").onclick = () => {
-    signup(
-      document.getElementById("username").value,
-      document.getElementById("password").value
-    );
+  if (!user || !pass) {
+    alert("Fill everything");
+    return;
+  }
+
+  const users = JSON.parse(localStorage.getItem("users") || "{}");
+
+  if (users[user]) {
+    alert("User already exists");
+    return;
+  }
+
+  users[user] = {
+    password: pass,
+    tokens: 0
   };
+
+  localStorage.setItem("users", JSON.stringify(users));
+  localStorage.setItem("currentUser", user);
+  location.href = "home.html";
+}
+
+const userInput = document.getElementById("user");
+const passInput = document.getElementById("pass");
 </script>
 
 </body>
