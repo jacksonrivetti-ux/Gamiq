@@ -20,19 +20,26 @@
       border-radius: 20px;
       width: 320px;
       text-align: center;
+      backdrop-filter: blur(10px);
     }
 
+    /* LOGO */
     .logo {
-      width: 100px;
-      height: 100px;
+      width: 110px;
+      height: 110px;
       border-radius: 50%;
       background: white;
       margin: 0 auto 15px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 40px;
+      font-size: 42px;
       color: black;
+      font-weight: bold;
+    }
+
+    h2 {
+      margin-top: 10px;
     }
 
     input {
@@ -70,6 +77,8 @@
 <body>
 
 <div class="box">
+
+  <!-- LOGO -->
   <div class="logo">🎮</div>
 
   <!-- LOGIN -->
@@ -90,6 +99,7 @@
     <button onclick="signup()">Create Account</button>
     <div class="link" onclick="showLogin()">Back to sign in</div>
   </div>
+
 </div>
 
 <script>
