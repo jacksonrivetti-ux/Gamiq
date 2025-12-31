@@ -1,116 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Gamiq – Login</title>
-
-  <link rel="icon" href="logo.png">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#4f46e5">
-
+  <title>Gamiq Login</title>
   <style>
-    * { box-sizing: border-box; font-family: Arial, sans-serif; }
-
     body {
       margin: 0;
       height: 100vh;
-      background: linear-gradient(120deg, #6366f1, #22c55e, #ec4899);
-      overflow: hidden;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg, #4f46e5, #9333ea, #06b6d4);
+      overflow: hidden;
       color: white;
     }
 
-    .card {
-      background: rgba(0,0,0,0.5);
+    .box {
+      background: rgba(0,0,0,0.6);
       padding: 30px;
-      border-radius: 15px;
+      border-radius: 20px;
       width: 300px;
       text-align: center;
-      z-index: 2;
+      box-shadow: 0 0 30px rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
     }
 
-    .logo {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      margin-bottom: 15px;
+    h2 {
+      margin-bottom: 20px;
     }
 
     input {
       width: 100%;
       padding: 10px;
-      margin: 8px 0;
-      border-radius: 8px;
+      margin: 10px 0;
+      border-radius: 10px;
       border: none;
+      outline: none;
     }
 
     button {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       margin-top: 10px;
-      border-radius: 8px;
+      border-radius: 12px;
       border: none;
-      background: #22c55e;
-      font-weight: bold;
       cursor: pointer;
+      background: #22c55e;
+      color: white;
+      font-size: 16px;
     }
 
-    canvas {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
+    button:hover {
+      background: #16a34a;
+    }
+
+    a {
+      color: #38bdf8;
+      text-decoration: none;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
 
-<canvas id="particles"></canvas>
+<div class="box">
+  <h2>Sign In</h2>
 
-<div class="card">
-  <img src="logo.png" class="logo">
-  <h2>Gamiq</h2>
+  <input id="username" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
 
-  <input type="text" placeholder="Username">
-  <input type="password" placeholder="Password">
+  <button id="loginBtn">Login</button>
 
-  <button onclick="location.href='home.html'">Sign In</button>
+  <p>
+    <a href="signup.html">Create an account</a>
+  </p>
 </div>
 
-<script>
-  const canvas = document.getElementById("particles");
-  const ctx = canvas.getContext("2d");
+<script type="module">
+  import { login } from "./auth.js";
 
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
-
-  const particles = Array.from({ length: 80 }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    r: Math.random() * 3 + 1,
-    dx: Math.random() * 0.6 - 0.3,
-    dy: Math.random() * 0.6 - 0.3
-  }));
-
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
-      p.x += p.dx;
-      p.y += p.dy;
-
-      if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
-
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(255,255,255,0.7)";
-      ctx.fill();
-    });
-    requestAnimationFrame(animate);
-  }
-
-  animate();
+  document.getElementById("loginBtn").onclick = () => {
+    login(
+      document.getElementById("username").value,
+      document.getElementById("password").value
+    );
+  };
 </script>
 
 </body>
