@@ -11,12 +11,14 @@
       min-height: 100vh;
     }
 
+    /* NAV BAR */
     .nav {
       padding: 15px 25px;
       background: rgba(0,0,0,0.5);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      backdrop-filter: blur(10px);
     }
 
     .nav button {
@@ -26,16 +28,29 @@
       border-radius: 10px;
       color: white;
       cursor: pointer;
+      margin-left: 10px;
     }
 
+    .logout-btn {
+      background: #ef4444;
+    }
+
+    /* MAIN CARD */
     .card {
       max-width: 1000px;
       margin: 40px auto;
       background: rgba(0,0,0,0.6);
       padding: 30px;
       border-radius: 20px;
+      backdrop-filter: blur(10px);
     }
 
+    h2 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    /* GAMES GRID */
     .games {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
@@ -48,18 +63,21 @@
       border-radius: 18px;
       overflow: hidden;
       cursor: pointer;
-      transition: transform .2s;
+      transition: transform 0.2s, background 0.2s;
     }
 
-    .game:hover { transform: scale(1.05); }
+    .game:hover {
+      transform: scale(1.05);
+      background: rgba(255,255,255,0.2);
+    }
 
     .game-img {
       height: 120px;
+      background: linear-gradient(135deg,#22c55e,#38bdf8,#a855f7);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 48px;
-      background: linear-gradient(135deg,#22c55e,#38bdf8,#a855f7);
     }
 
     .game-name {
@@ -67,45 +85,73 @@
       text-align: center;
       font-weight: bold;
     }
+
+    .empty {
+      text-align: center;
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
 
+<!-- NAV BAR -->
 <div class="nav">
   <div>🎮 Gamiq</div>
   <div>
     <button onclick="location.href='create.html'">➕ Create</button>
+    <button class="logout-btn" onclick="logout()">Log Out</button>
   </div>
 </div>
 
+<!-- CONTENT -->
 <div class="card">
   <h2>Live Games</h2>
   <div class="games" id="games"></div>
 </div>
 
 <script>
-const user = localStorage.getItem("currentUser");
-if (!user) location.href = "index.html";
+/* AUTH CHECK */
+const currentUser = localStorage.getItem("currentUser");
+if (!currentUser) {
+  location.href = "index.html";
+}
 
+/* LOAD GAMES */
 const games = JSON.parse(localStorage.getItem("games") || "{}");
 const gamesDiv = document.getElementById("games");
 
-let any = false;
+let hasGames = false;
+
 for (const id in games) {
   if (games[id].status === "approved") {
-    any = true;
-    const g = document.createElement("div");
-    g.className = "game";
-    g.innerHTML = `
+    hasGames = true;
+
+    const gameCard = document.createElement("div");
+    gameCard.className = "game";
+    gameCard.onclick = () => openGame(id);
+
+    gameCard.innerHTML = `
       <div class="game-img">🎮</div>
       <div class="game-name">${games[id].name}</div>
     `;
-    gamesDiv.appendChild(g);
+
+    gamesDiv.appendChild(gameCard);
   }
 }
 
-if (!any) {
-  gamesDiv.innerHTML = "<p>No games live yet</p>";
+if (!hasGames) {
+  gamesDiv.innerHTML = `<p class="empty">No games live yet</p>`;
+}
+
+/* FUNCTIONS */
+function openGame(gameId) {
+  console.log("Open game:", gameId);
+  // later: window.location.href = "play.html?id=" + gameId;
+}
+
+function logout() {
+  localStorage.removeItem("currentUser");
+  location.href = "index.html";
 }
 </script>
 
