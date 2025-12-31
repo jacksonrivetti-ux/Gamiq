@@ -24,7 +24,6 @@
       box-shadow: 0 0 30px rgba(0,0,0,0.5);
     }
 
-    /* LOGO */
     .logo {
       width: 90px;
       height: 90px;
@@ -62,7 +61,6 @@
 <body>
 
 <div class="box">
-
   <!-- LOGO -->
   <img src="logo.png" alt="Gamiq Logo" class="logo">
 
@@ -77,23 +75,36 @@
 </div>
 
 <script>
+const ADMIN_USER = "admin";
+const ADMIN_PASS = "admin1234";
+
 function login() {
-  const user = userInput.value;
-  const pass = passInput.value;
+  const username = document.getElementById("user").value;
+  const password = document.getElementById("pass").value;
 
-  const users = JSON.parse(localStorage.getItem("users") || "{}");
-
-  if (!users[user] || users[user].password !== pass) {
-    alert("Wrong username or password");
+  // ADMIN LOGIN
+  if (username === ADMIN_USER && password === ADMIN_PASS) {
+    localStorage.setItem("currentUser", "admin");
+    location.href = "admin.html";
     return;
   }
 
-  localStorage.setItem("currentUser", user);
+  // NORMAL USERS
+  const users = JSON.parse(localStorage.getItem("users") || "{}");
+
+  if (!users[username]) {
+    alert("User not found");
+    return;
+  }
+
+  if (users[username].password !== password) {
+    alert("Wrong password");
+    return;
+  }
+
+  localStorage.setItem("currentUser", username);
   location.href = "home.html";
 }
-
-const userInput = document.getElementById("user");
-const passInput = document.getElementById("pass");
 </script>
 
 </body>
