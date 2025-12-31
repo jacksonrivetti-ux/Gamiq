@@ -4,20 +4,44 @@
   <title>Gamiq Admin</title>
   <style>
     body {
+      margin: 0;
       font-family: Arial;
       background: linear-gradient(120deg,#7c3aed,#ec4899,#22d3ee);
       color: white;
     }
 
+    /* NAV */
+    .nav {
+      padding: 15px 25px;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav button {
+      background: #ef4444;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* BOX */
     .box {
-      max-width: 800px;
+      max-width: 900px;
       margin: 30px auto;
       background: rgba(0,0,0,0.6);
       padding: 25px;
       border-radius: 20px;
     }
 
-    .game {
+    h2 {
+      margin-top: 0;
+    }
+
+    .item {
       background: rgba(255,255,255,0.1);
       padding: 15px;
       border-radius: 15px;
@@ -36,52 +60,104 @@
     .approve { background: #22c55e; color: white; }
     .reject { background: #ef4444; color: white; }
     .remove { background: #f97316; color: white; }
+    .ban { background: #991b1b; color: white; }
+
+    .empty {
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
 
+<!-- NAV -->
+<div class="nav">
+  <div>🛠️ Gamiq Admin Panel</div>
+  <button onclick="logout()">Log Out</button>
+</div>
+
+<!-- PENDING GAMES -->
 <div class="box">
   <h2>Pending Games</h2>
   <div id="pending"></div>
 </div>
 
+<!-- LIVE GAMES -->
 <div class="box">
   <h2>Live Games</h2>
   <div id="live"></div>
 </div>
 
-<script>
-if (localStorage.getItem("currentUser") !== "admin")
-  location.href = "index.html";
+<!-- USERS -->
+<div class="box">
+  <h2>Players</h2>
+  <div id="users"></div>
+</div>
 
+<script>
+/* AUTH CHECK */
+if (localStorage.getItem("currentUser") !== "admin") {
+  location.href = "index.html";
+}
+
+/* LOAD DATA */
 const games = JSON.parse(localStorage.getItem("games") || "{}");
-const pending = document.getElementById("pending");
-const live = document.getElementById("live");
+const users = JSON.parse(localStorage.getItem("users") || {});
+
+const pendingDiv = document.getElementById("pending");
+const liveDiv = document.getElementById("live");
+const usersDiv = document.getElementById("users");
+
+/* RENDER GAMES */
+let hasPending = false;
+let hasLive = false;
 
 for (const id in games) {
   const g = games[id];
   const div = document.createElement("div");
-  div.className = "game";
-  div.innerHTML = `<b>${g.name}</b><br>${g.creator}`;
+  div.className = "item";
+  div.innerHTML = `<b>${g.name}</b><br>Creator: ${g.creator}`;
 
   if (g.status === "pending") {
+    hasPending = true;
     div.innerHTML += `
       <br>
       <button class="approve" onclick="approve('${id}')">Approve</button>
-      <button class="reject" onclick="remove('${id}')">Reject</button>
+      <button class="reject" onclick="removeGame('${id}')">Reject</button>
     `;
-    pending.appendChild(div);
+    pendingDiv.appendChild(div);
   }
 
   if (g.status === "approved") {
+    hasLive = true;
     div.innerHTML += `
       <br>
       <button class="remove" onclick="unpublish('${id}')">Take Down</button>
     `;
-    live.appendChild(div);
+    liveDiv.appendChild(div);
   }
 }
 
+if (!hasPending) pendingDiv.innerHTML = "<p class='empty'>No pending games</p>";
+if (!hasLive) liveDiv.innerHTML = "<p class='empty'>No live games</p>";
+
+/* RENDER USERS */
+let hasUsers = false;
+for (const username in users) {
+  hasUsers = true;
+
+  const div = document.createElement("div");
+  div.className = "item";
+  div.innerHTML = `
+    <b>${username}</b>
+    <br>
+    <button class="ban" onclick="banUser('${username}')">Ban Player</button>
+  `;
+  usersDiv.appendChild(div);
+}
+
+if (!hasUsers) usersDiv.innerHTML = "<p class='empty'>No users found</p>";
+
+/* FUNCTIONS */
 function approve(id) {
   games[id].status = "approved";
   save();
@@ -92,14 +168,41 @@ function unpublish(id) {
   save();
 }
 
-function remove(id) {
+function removeGame(id) {
   delete games[id];
+  save();
+}
+
+function banUser(username) {
+  if (!confirm("Ban " + username + "? This will delete their account.")) return;
+
+  // Remove user's games
+  for (const id in games) {
+    if (games[id].creator === username) {
+      delete games[id];
+    }
+  }
+
+  // Delete user
+  delete users[username];
+
+  // Force logout if they are logged in
+  if (localStorage.getItem("currentUser") === username) {
+    localStorage.removeItem("currentUser");
+  }
+
   save();
 }
 
 function save() {
   localStorage.setItem("games", JSON.stringify(games));
+  localStorage.setItem("users", JSON.stringify(users));
   location.reload();
+}
+
+function logout() {
+  localStorage.removeItem("currentUser");
+  location.href = "index.html";
 }
 </script>
 
