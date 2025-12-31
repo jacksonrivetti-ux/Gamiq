@@ -23,7 +23,6 @@
       backdrop-filter: blur(10px);
     }
 
-    /* LOGO */
     .logo {
       width: 110px;
       height: 110px;
@@ -36,10 +35,6 @@
       font-size: 42px;
       color: black;
       font-weight: bold;
-    }
-
-    h2 {
-      margin-top: 10px;
     }
 
     input {
@@ -78,11 +73,10 @@
 
 <div class="box">
 
-  <!-- LOGO -->
   <div class="logo">🎮</div>
 
   <!-- LOGIN -->
-  <div id="login">
+  <div id="loginBox">
     <h2>Sign In</h2>
     <input id="luser" placeholder="Username">
     <input id="lpass" type="password" placeholder="Password">
@@ -91,7 +85,7 @@
   </div>
 
   <!-- SIGN UP -->
-  <div id="signup" class="hidden">
+  <div id="signupBox" class="hidden">
     <h2>Create Account</h2>
     <input id="suser" placeholder="Username">
     <input id="spass" type="password" placeholder="Password">
@@ -105,20 +99,23 @@
 <script>
 const users = JSON.parse(localStorage.getItem("users") || "{}");
 
+const loginBox = document.getElementById("loginBox");
+const signupBox = document.getElementById("signupBox");
+
 function showSignup() {
-  login.style.display = "none";
-  signup.style.display = "block";
+  loginBox.classList.add("hidden");
+  signupBox.classList.remove("hidden");
 }
 
 function showLogin() {
-  signup.style.display = "none";
-  login.style.display = "block";
+  signupBox.classList.add("hidden");
+  loginBox.classList.remove("hidden");
 }
 
 function signup() {
-  const u = suser.value.trim();
-  const p = spass.value;
-  const a = sage.value;
+  const u = document.getElementById("suser").value.trim();
+  const p = document.getElementById("spass").value;
+  const a = document.getElementById("sage").value;
 
   if (!u || !p || !a) {
     alert("Fill everything out");
@@ -141,8 +138,8 @@ function signup() {
 }
 
 function login() {
-  const u = luser.value.trim();
-  const p = lpass.value;
+  const u = document.getElementById("luser").value.trim();
+  const p = document.getElementById("lpass").value;
 
   if (u === "admin" && p === "admin1234") {
     localStorage.setItem("currentUser", "admin");
