@@ -11,7 +11,6 @@
       color: white;
     }
 
-    /* Top nav */
     .nav {
       display: flex;
       justify-content: space-between;
@@ -31,12 +30,10 @@
       font-size: 16px;
     }
 
-    /* Main content */
     .content {
       padding: 40px;
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      justify-content: center;
     }
 
     .card {
@@ -50,11 +47,10 @@
     }
 
     .card h2 {
-      margin-top: 0;
       text-align: center;
+      margin-top: 0;
     }
 
-    /* Games grid */
     .games {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -90,10 +86,9 @@
       background: #ef4444;
       color: white;
       font-size: 14px;
-    }
-
-    .logout:hover {
-      background: #dc2626;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
   </style>
 </head>
@@ -107,25 +102,25 @@
   </div>
 </div>
 
-<!-- MAIN CONTENT -->
+<!-- CONTENT -->
 <div class="content">
   <div class="card">
     <h2>Games</h2>
 
     <div class="games">
-      <div class="game" onclick="playGame(0)">
+      <div class="game" onclick="playGame(10)">
         🕹️ Game One<br>
-        <span>Free</span>
+        <span>Earn 10 Tokens</span>
       </div>
 
-      <div class="game" onclick="playGame(50)">
+      <div class="game" onclick="playGame(20)">
         🚀 Space Game<br>
-        <span>50 Tokens</span>
+        <span>Earn 20 Tokens</span>
       </div>
 
-      <div class="game" onclick="playGame(100)">
+      <div class="game" onclick="playGame(30)">
         🧠 Puzzle Game<br>
-        <span>100 Tokens</span>
+        <span>Earn 30 Tokens</span>
       </div>
     </div>
 
@@ -150,20 +145,14 @@
   let tokens = snap.data().tokens || 0;
   document.getElementById("tokens").textContent = tokens;
 
-  window.playGame = async function(cost) {
-    if (tokens < cost) {
-      alert("Not enough tokens!");
-      return;
-    }
+  window.playGame = async function(reward) {
+    tokens += reward;
+    document.getElementById("tokens").textContent = tokens;
 
-    if (cost > 0) {
-      tokens -= cost;
-      document.getElementById("tokens").textContent = tokens;
-      await updateDoc(userRef, { tokens });
-    }
+    await updateDoc(userRef, { tokens });
 
-    alert("Game launching!");
-    // later: window.location.href = "games/game1.html";
+    alert(`You earned ${reward} tokens!`);
+    // later: redirect to actual game page
   };
 
   window.logout = function() {
